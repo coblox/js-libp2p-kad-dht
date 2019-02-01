@@ -10,12 +10,17 @@ const assert = require('assert')
 const c = require('./constants')
 
 const errcode = require('err-code')
+const EE = require('events').EventEmitter
 
 class RandomWalk {
   constructor (kadDHT) {
     assert(kadDHT, 'Random Walk needs an instance of the Kademlia DHT')
     this._runningHandle = null
     this._kadDHT = kadDHT
+
+    this.discovery = new EE();
+    this.discovery.start = (callback) => this.start()
+    this.discovery.stop = (callback) => this.stop(callback)
   }
 
   /**
@@ -140,6 +145,7 @@ class RandomWalk {
         return callback(err)
       }
       this._kadDHT._log('random-walk:query:found', err, peer)
+      this.discovery.emit("peer", peer);
 
       // wait what, there was something found? Lucky day!
       callback(errcode(new Error(`random-walk: ACTUALLY FOUND PEER: ${peer}, ${id.toB58String()}`), 'ERR_FOUND_RANDOM_PEER'))
