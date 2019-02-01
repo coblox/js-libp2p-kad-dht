@@ -30,7 +30,7 @@ class RandomWalk {
    */
   start (queries, period, timeout) {
     if (queries == null) { queries = 1 }
-    if (period == null) { period = 5 * c.minute }
+    if (period == null) { period = 10 * c.second }
     if (timeout == null) { timeout = 10 * c.second }
     // Don't run twice
     if (this._running) { return }
